@@ -1,35 +1,42 @@
-// Function to detect device type
-function detectDevice() {
-  var deviceTypeElement = document.getElementById("deviceType");
-  var featureList = document.getElementById("featureList");
+const express = require('express');
+const dotenv = require('dotenv');
 
-  if (window.innerWidth < 768) {
-    deviceTypeElement.textContent = "You are using a mobile device.";
-    // Example mobile features
-    featureList.innerHTML = `
-      <div class="feature">Mobile Feature 1</div>
-      <div class="feature">Mobile Feature 2</div>
-    `;
-  } else if (window.innerWidth < 1024) {
-    deviceTypeElement.textContent = "You are using a tablet.";
-    // Example tablet features
-    featureList.innerHTML = `
-      <div class="feature">Tablet Feature 1</div>
-      <div class="feature">Tablet Feature 2</div>
-      <div class="feature">Tablet Feature 3</div>
-    `;
-  } else {
-    deviceTypeElement.textContent = "You are using a desktop.";
-    // Example desktop features
-    featureList.innerHTML = `
-      <div class="feature">Desktop Feature 1</div>
-      <div class="feature">Desktop Feature 2</div>
-      <div class="feature">Desktop Feature 3</div>
-      <div class="feature">Desktop Feature 4</div>
-    `;
-  }
-}
+// Load environment variables
+dotenv.config();
 
-// Detect device type on load and resize
-window.onload = detectDevice;
-window.onresize = detectDevice;
+const app = express();
+
+// Check PORT value from environment
+console.log(process.env.PORT);
+
+// Get PORT from .env or default to 3000
+const port = process.env.PORT || 3000;
+
+// Home route
+app.get('/', (req, res) => {
+    res.send('Environment Variables Demo!');
+});
+
+// Config route (demo only)
+app.get('/config', (req, res) => {
+
+    const dbHost = process.env.DB_HOST;
+    const dbUser = process.env.DB_USER;
+    const apiKey = process.env.API_KEY;
+
+    res.json({
+        dbHost,
+        dbUser,
+        apiKey
+    });
+});
+
+// 404 handler
+app.use((req, res) => {
+    res.status(404).send('Not Found');
+});
+
+// Start server
+app.listen(port, () => {
+    console.log(`Server running on port ${port}`);
+});
